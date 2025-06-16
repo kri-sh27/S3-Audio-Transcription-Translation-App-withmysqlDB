@@ -1,0 +1,7 @@
+openai==0.28
+python-dotenv
+flask
+boto3
+streamlit
+mysql-connector-python 
+bcrypt
