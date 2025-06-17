@@ -11,11 +11,11 @@ import bcrypt
 load_dotenv()
 
 # Configure OpenAI and AWS
-openai.api_key = os.getenv('OPENAI_API_KEY')
-aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
-aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
-aws_region = os.getenv('AWS_REGION')
-bucket_name = os.getenv('S3_BUCKET_NAME')
+# openai.api_key = os.getenv('OPENAI_API_KEY')
+# aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
+# aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+# aws_region = os.getenv('AWS_REGION')
+# bucket_name = os.getenv('S3_BUCKET_NAME')
 
 # MySQL config
 MYSQL_HOST = os.getenv("MYSQL_HOST")
@@ -24,12 +24,12 @@ MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD")
 MYSQL_DATABASE = os.getenv("MYSQL_DATABASE")
 
 # S3 client
-s3_client = boto3.client(
-    's3',
-    aws_access_key_id=aws_access_key_id,
-    aws_secret_access_key=aws_secret_access_key,
-    region_name=aws_region
-)
+# s3_client = boto3.client(
+#     's3',
+#     aws_access_key_id=aws_access_key_id,
+#     aws_secret_access_key=aws_secret_access_key,
+#     region_name=aws_region
+# )
 
 # ------------------------- DB FUNCTIONS -------------------------
 def get_db_connection():
