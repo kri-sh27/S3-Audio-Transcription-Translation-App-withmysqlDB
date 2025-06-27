@@ -5,3 +5,4 @@ boto3
 streamlit
 mysql-connector-python 
 bcrypt
+pytest
