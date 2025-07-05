@@ -190,3 +190,7 @@ fabric.properties
 # Virtual Environment
 venv
 venv/
+/temp_files
+audiogeneratowiths3.py
+audios3manualstop.py
+latestcode.py

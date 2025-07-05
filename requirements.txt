@@ -1,4 +1,4 @@
-openai==0.28
+openai
 python-dotenv
 flask
 boto3
@@ -6,3 +6,5 @@ streamlit
 mysql-connector-python 
 bcrypt
 pytest
+speechrecognition 
+python-dotenv
