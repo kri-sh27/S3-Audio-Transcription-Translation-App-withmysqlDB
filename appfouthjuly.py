@@ -15,10 +15,10 @@ if not os.path.exists("temp_files"):
     os.makedirs("temp_files")
 # Initialize S3 client (make sure your AWS credentials are configured)
 s3_client = boto3.client('s3')
-S3_BUCKET_NAME = ""  # Replace with your bucket name
+S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME")  # Replace with your bucket name
 
 # Set OpenAI API key
-openai.api_key = ""  # Replace with your actual key
+openai.api_key = os.getenv("OPENAI_API_KEY")  # Replace with your actual key
 
 # ------------------------- AUTHENTICATION -------------------------
 if "authenticated" not in st.session_state:
@@ -88,7 +88,7 @@ def cleanup_temp_files():
             st.error(f"Error deleting {file_path}: {e}")
 
 # Sidebar navigation
-app_mode = st.sidebar.radio("Navigation", ["View Files", "Create New Recording"])
+app_mode = st.sidebar.radio("Navigation", ["View Files", "Create New Recording","Upload Custom File"])
 
 if app_mode == "View Files":
     # ------------------------- FILE VIEWING AND PROCESSING -------------------------
@@ -297,6 +297,40 @@ elif app_mode == "Create New Recording":
             #     st.error(f"⚠️ Error: {e}")
             #     if 'temp_filename' in locals() and os.path.exists(temp_filename):
             #         os.unlink(temp_filename)
+
+elif app_mode == "Upload Custom File":
+    st.header("📤 Upload Custom File")
+    
+    uploaded_file = st.file_uploader("Choose an audio file to upload", 
+                                   type=['wav', 'mp3', 'ogg', 'm4a'])  # Restrict to audio formats
+    
+    if uploaded_file is not None:
+        # Create temp file with proper extension
+        file_ext = os.path.splitext(uploaded_file.name)[1]
+        with tempfile.NamedTemporaryFile(delete=False, suffix=file_ext) as tmp_file:
+            tmp_file.write(uploaded_file.getbuffer())
+            temp_path = tmp_file.name
+        
+        try:
+            # Use your existing upload_to_s3 function
+            success, s3_key = upload_to_s3(
+                bucket_name=S3_BUCKET_NAME,
+                local_path=temp_path,
+                user_email=st.session_state.email if 'email' in st.session_state else None
+            )
+            
+            if success:
+                st.success(f"✅ File uploaded successfully to: {s3_key}")
+                st.audio(temp_path)  # Preview the uploaded audio
+            else:
+                st.error(f"❌ Upload failed: {s3_key}")
+                
+        except Exception as e:
+            st.error(f"⚠️ Error during upload: {str(e)}")
+        finally:
+            # Clean up temp file
+            if os.path.exists(temp_path):
+                os.unlink(temp_path)
 
 # ------------------------- SIDEBAR FOOTER -------------------------
 st.sidebar.markdown("---")

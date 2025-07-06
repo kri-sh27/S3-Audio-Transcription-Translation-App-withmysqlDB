@@ -84,3 +84,40 @@ def upload_to_s3(bucket_name, local_path, s3_key=None, user_email=None):
         return True, s3_key
     except Exception as e:
         return False, str(e)
+
+import boto3
+import os
+from datetime import datetime
+
+def upload_custom_file_to_s3(bucket_name, local_file_path, user_email=None):
+    """
+    Uploads any custom file from the user's local system to S3 under their folder.
+    
+    Args:
+        bucket_name (str): Name of the S3 bucket.
+        local_file_path (str): Full path to the local file.
+        user_email (str, optional): User's email to organize files in user-specific folders.
+        
+    Returns:
+        (bool, str): Tuple indicating
+    """
+    # Generate a unique key for the file
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = os.path.basename(local_file_path)
+    
+    # Define user folder based on email
+    user_folder = "unknown_user"
+    if user_email:
+        user_folder = user_email.split("@")[0]
+    
+    # Create the S3 key path
+    s3_key = f"custom_uploads/{user_folder}/{timestamp}_{filename}"
+    
+    # Initialize S3 client
+    s3 = boto3.client('s3')
+    try:
+        # Upload file
+        s3.upload_file(local_file_path, bucket_name, s3_key)
+        return True, s3_key
+    except Exception as e:
+        return False, str(e)
