@@ -115,10 +115,6 @@ if app_mode == "View Files":
             with st.spinner("Processing audio..."):
                 try:
                     # Download and process file
-                    # temp_path = os.path.join(tempfile.gettempdir(), f"temp_audio_{os.getpid()}{os.path.splitext(selected_file)[1]}")
-                    # Create temp file in current directory
-                    # temp_path = os.path.join("temp_files", f"temp_audio_{os.path.splitext(selected_file)[0]}{os.path.splitext(selected_file)[1]}")
-                    # download_s3_file(S3_BUCKET_NAME, selected_file, temp_path)
                     safe_filename = os.path.basename(selected_file).replace("/", "_")
                     temp_path = os.path.join("temp_files", f"temp_{safe_filename}")
                     
@@ -179,12 +175,6 @@ elif app_mode == "Create New Recording":
             
             try:
                 # Save recording to temporary file
-                # print("inside try block")
-                # with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmpfile:
-                #     print("iinside with")
-                #     tmpfile.write(audio_data.get_wav_data())
-                #     tmpfile_path = tmpfile.name
-                #     print("printing tmpeil path", tmpfile_path)
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                 temp_filename = os.path.join("temp_files", f"recording_{timestamp}.wav")
                 
@@ -198,24 +188,7 @@ elif app_mode == "Create New Recording":
                 if 'temp_filename' in locals() and os.path.exists(temp_filename):
                     os.unlink(temp_filename) 
     if 'latest_recording' in st.session_state and os.path.exists(st.session_state.latest_recording): 
-                # Option to upload to S3
-                # if st.button("📤 Upload to S3"):
-                #     # Generate unique filename
-                #     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                #     username = st.session_state.email.split("@")[0]  # Use part of email as identifier
-                #     s3_filename = f"recordings/{username}/{timestamp}.wav"
-                #     print("filename is ",s3_filename)
-                    
-                #     # Upload to S3
-                #     with st.spinner("Uploading to S3..."):
-                #         upload_to_s3(S3_BUCKET_NAME, tmpfile_path, s3_filename)
-                #         st.success(f"✅ File uploaded successfully as {s3_filename}")
-                # In your recording code:
-                # 
-                
-
                  # Upload to S3
-        print("before upload click")
         if st.button("📤 Upload to S3"):
             try:
                 with st.spinner("Uploading to S3..."):
@@ -225,11 +198,8 @@ elif app_mode == "Create New Recording":
                     # Verify file exists and has content
                     if not os.path.exists(temp_filename):
                         st.error("File not found. Please record again.")
-                        # return
-                    
                     elif os.path.getsize(temp_filename) == 0:
                         st.error("Recording file is empty. Please record again.")
-                        # return
                     else:
                     # Upload to S3
                         success, s3_key = upload_to_s3(
@@ -249,54 +219,6 @@ elif app_mode == "Create New Recording":
                 st.error(f"⚠️ Error during upload: {e}")
                 if 'temp_filename' in locals() and os.path.exists(temp_filename):
                     os.unlink(temp_filename)
-
-
-
-                # if st.button("📤 Upload to S3"):
-                #     print("s3 upload button clicked")
-                #     username = st.session_state.email.split("@")[0]
-                #     print("Username name is")
-                #     # s3_filename = f"recordings/{username}/recording_{timestamp}.wav"
-                #     s3_filename = f"recordings/{username}/recording_{timestamp}.wav"
-                    
-                #     with st.spinner("Uploading to S3..."):
-                #         success, result = upload_to_s3(
-                #             bucket_name=S3_BUCKET_NAME,
-                #             local_path=temp_filename,
-                #             s3_key=s3_filename
-                #         )
-                        
-                #         if success:
-                #             st.success(f"✅ File uploaded successfully as {s3_filename}")
-                #             os.unlink(temp_filename)
-                #         else:
-                #             st.error(f"❌ Upload failed: {result}")
-                # In your recording code:
-            #     if st.button("📤 Upload to S3"):
-            #         print("inside if")
-            #         with st.spinner("Uploading to S3..."):
-            #             print("inside with")
-            #             success, s3_key = upload_to_s3(
-            #                 bucket_name=S3_BUCKET_NAME,
-            #                 local_path=temp_filename,
-            #                 user_email=st.session_state.email
-            #             )
-            #             print("before success")
-            #             if success:
-            #                 st.success(f"✅ File uploaded successfully to {s3_key}")
-            #                 # Optionally delete the local file after upload
-            #                 os.unlink(temp_filename)
-            #             else:
-            #                 st.error(f"❌ Upload failed: {s3_key}")  # s3_key contains error message here
-            #     # except Exception as e:
-            #         # st.error(f"⚠️ Error: {e}")
-            #         # Clean up
-            #     # os.unlink(tmpfile_path)
-                    
-            # except Exception as e:
-            #     st.error(f"⚠️ Error: {e}")
-            #     if 'temp_filename' in locals() and os.path.exists(temp_filename):
-            #         os.unlink(temp_filename)
 
 elif app_mode == "Upload Custom File":
     st.header("📤 Upload Custom File")

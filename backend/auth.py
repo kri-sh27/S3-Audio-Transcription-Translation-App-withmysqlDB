@@ -19,7 +19,6 @@ def get_db_connection():
         database=MYSQL_DATABASE
     )
 
-
 def authenticate_user(email, password):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -29,7 +28,6 @@ def authenticate_user(email, password):
     if row:
         return bcrypt.checkpw(password.encode('utf-8'), row[0].encode('utf-8'))
     return False
-
 
 def register_user(email, password):
     try:
