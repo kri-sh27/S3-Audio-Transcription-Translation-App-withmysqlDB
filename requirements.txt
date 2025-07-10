@@ -1,4 +1,4 @@
-openai
+openai==0.28
 python-dotenv
 flask
 boto3
@@ -8,3 +8,4 @@ bcrypt
 pytest
 speechrecognition 
 python-dotenv
+PyAudio
