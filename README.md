@@ -40,15 +40,17 @@ A web-based application built with Streamlit that leverages advanced AI models t
 - 🐳 Dockerized for easy deployment
 - 🔄 GitHub Actions CI/CD pipeline with EC2 deployment
 
----
-
+````
 ## 🛠 Installation
 
 1. **Clone the repository**
    ```bash
    git clone https://github.com/kri-sh27/S3-Audio-Transcription-Translation-App.git
+   ```
+   ```bash
    cd S3-Audio-Transcription-Translation-App
-````
+   ```
+
 
 2. **Install the dependencies**
 
@@ -222,6 +224,4 @@ Make sure to set the following environment variables securely:
 ## ⭐️ Show Your Support
 
 If you found this project helpful, please give it a ⭐ on GitHub!
-
-```
 
