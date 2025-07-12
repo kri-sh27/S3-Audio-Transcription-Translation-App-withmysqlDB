@@ -1,6 +1,14 @@
 # Use a slim Python base image
 FROM python:3.9-slim
 
+# Install system dependencies needed for some Python packages
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpq-dev \
+    # Add other system dependencies as needed, e.g., libgfortran5 for numpy
+    --no-install-recommends && \
+    apt-get clean
+
 # Set the working directory
 WORKDIR /app
 
