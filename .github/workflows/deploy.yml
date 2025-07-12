@@ -35,15 +35,47 @@ jobs:
           host: ${{ secrets.EC2_PUBLIC_DNS }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          # script: |
+          #   # Pull the latest image from Docker Hub
+          #   sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
+
+          #   # Stop and remove the existing container if running
+          #   sudo docker stop my-streamlit-app || true
+          #   sudo docker rm my-streamlit-app || true
+
+          #   # Run the new container with environment variables, including MySQL credentials
+          #   sudo docker run -d \
+          #     -p 8501:8501 \
+          #     --name my-streamlit-app \
+          #     -e MYSQL_HOST="${{ secrets.MYSQL_HOST }}" \
+          #     -e MYSQL_USER="${{ secrets.MYSQL_USERNAME }}" \
+          #     -e MYSQL_PASSWORD="${{ secrets.MYSQL_PASSWORD }}" \
+          #     -e MYSQL_DATABASE="${{ secrets.MYSQL_DATABASE_NAME }}" \
+          #     -e OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
+          #     -e S3_BUCKET_NAME="${{ secrets.S3_BUCKET_NAME }}" \
+          #     -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" \
+          #     -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+          #     ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
           script: |
             # Pull the latest image from Docker Hub
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
 
-            # Stop and remove the existing container if running
-            sudo docker stop my-streamlit-app || true
-            sudo docker rm my-streamlit-app || true
+            # Check if a container with the same name exists and stop/remove it
+            if [ "$(sudo docker ps -q -f name=my-streamlit-app)" ]; then
+                echo "Stopping and removing existing container 'my-streamlit-app'..."
+                sudo docker stop my-streamlit-app
+                sudo docker rm my-streamlit-app
+            fi
 
-            # Run the new container with environment variables, including MySQL credentials
+            # Check if any other container is using port 8501 and stop/remove it (more aggressive)
+            if [ "$(sudo docker ps -q -f expose=8501)" ]; then
+                echo "Stopping and removing container using port 8501..."
+                CONTAINER_ID_USING_PORT=$(sudo docker ps -q -f expose=8501)
+                sudo docker stop $CONTAINER_ID_USING_PORT
+                sudo docker rm $CONTAINER_ID_USING_PORT
+            fi
+
+            # Run the new container with environment variables
             sudo docker run -d \
               -p 8501:8501 \
               --name my-streamlit-app \
@@ -53,6 +85,6 @@ jobs:
               -e MYSQL_DATABASE="${{ secrets.MYSQL_DATABASE_NAME }}" \
               -e OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" \
               -e S3_BUCKET_NAME="${{ secrets.S3_BUCKET_NAME }}" \
-              -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" \
-              -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+              -e AWS_ACCESS_KEY_ID="${{ secrets.S3_ACCESS_KEY_ID }}" \
+              -e AWS_SECRET_ACCESS_KEY="${{ secrets.S3_SECRET_ACCESS_KEY }}" \
               ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
