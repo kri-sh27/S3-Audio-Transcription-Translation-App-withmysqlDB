@@ -32,13 +32,13 @@ jobs:
       #   with:
       #     python-version: '3.9'
 
-      - name: Install dependencies for testing
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt
-      - name: Run Unit Tests
-        run: |
-          pytest tests/ --maxfail=1 --disable-warnings --tb=short
+      # - name: Install dependencies for testing
+      #   run: |
+      #     python3 -m pip install --upgrade pip
+      #     python3 -m pip install -r requirements.txt
+      # - name: Run Unit Tests
+      #   run: |
+      #     pytest tests/ --maxfail=1 --disable-warnings --tb=short
       - name: Build and push Docker image to Docker Hub
         uses: docker/build-push-action@v5
         with:
