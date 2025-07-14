@@ -7,5 +7,4 @@ mysql-connector-python
 bcrypt
 pytest
 speechrecognition 
-python-dotenv
 PyAudio
