@@ -41,7 +41,6 @@ jobs:
             --no-install-recommends && \
           sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 
-
       - name: Install dependencies for testing
         run: |
           python3 -m pip install --upgrade pip
