@@ -30,6 +30,17 @@ jobs:
         with:
           python-version: '3.9'
 
+      - name: adding essentials
+        run: |
+          apt-get update && apt-get install -y \
+          build-essential \
+          libpq-dev \
+          portaudio19-dev \
+          libasound-dev \
+          # Add other system dependencies as needed, e.g., libgfortran5 for numpy
+          --no-install-recommends && \
+          apt-get clean && rm -rf /var/lib/apt/lists/*
+
       - name: Install dependencies for testing
         run: |
           python3 -m pip install --upgrade pip
